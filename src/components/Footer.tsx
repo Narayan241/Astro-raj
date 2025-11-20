@@ -89,9 +89,9 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-amber-400 mt-1" />
                 <span className="text-amber-100">
-                  123, Spiritual Complex<br />
-                  Old Delhi, Delhi - 110006<br />
-                  India
+                  Bhatthron Ka Chowk <br />
+                  Near Jugal Bhawan<br />
+                  Bikaner
                 </span>
               </div>
             </div>

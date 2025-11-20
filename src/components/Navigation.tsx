@@ -25,7 +25,7 @@ export default function Navigation() {
             <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full flex items-center justify-center">
               <span className="text-xl">🪬</span>
             </div>
-            <span className="text-xl font-bold text-white">Pandit Rajkumar Ji</span>
+            <span className="text-xl font-bold text-white">Aadhyatm Jyotish</span>
           </Link>
 
           {/* Desktop Navigation */}
