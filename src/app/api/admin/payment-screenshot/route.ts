@@ -1,41 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const paymentData = await request.json()
+    const body = await req.json();
 
-    console.log('Payment screenshot received:', paymentData)
+    const { bookingId, imageUrl } = body;
 
-    // Validate bookingId
-    if (!paymentData.bookingId) {
+    // Validate inputs
+    if (!bookingId) {
       return NextResponse.json(
-        { error: 'bookingId is missing' },
+        { error: "bookingId is required" },
         { status: 400 }
-      )
+      );
     }
+
+    if (!imageUrl) {
+      return NextResponse.json(
+        { error: "imageUrl is required" },
+        { status: 400 }
+      );
+    }
+
+    // Create screenshot record
+    const screenshot = await db.paymentScreenshot.create({
+      data: {
+        bookingId: Number(bookingId), // ensure numeric ID
+        imageUrl,
+        uploadedAt: new Date(),
+      },
+    });
 
     // Update booking status to completed
     const updatedBooking = await db.booking.update({
-      where: {
-        id: paymentData.bookingId,    // <-- FIXED ✔️
-      },
-      data: {
-        status: 'completed'
-      }
-    })
+      where: { id: Number(bookingId) },
+      data: { status: "completed" },
+    });
 
-    return NextResponse.json({ 
-      success: true,
-      message: 'Payment screenshot saved successfully',
-      booking: updatedBooking
-    })
-
-  } catch (error: any) {
-    console.error('Payment screenshot error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to save payment screenshot' },
+      {
+        success: true,
+        message: "Screenshot saved and booking marked as completed.",
+        screenshot,
+        updatedBooking,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error in saving payment screenshot:", error);
+
+    return NextResponse.json(
+      {
+        error:
+          error?.message ||
+          "Something went wrong while saving payment screenshot.",
+      },
       { status: 500 }
-    )
+    );
   }
 }

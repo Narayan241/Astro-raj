@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,34 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Application tables
+/* ========================
+      BOOKING MODEL
+======================== */
+
 model Booking {
-  id                String   @id @default(cuid())
+  id                Int      @id @default(autoincrement())   // required for screenshots relation
   fullName          String
   email             String
-  mobileNumber       String?
+  mobileNumber      String?
   phone             String?
   dateOfBirth       String
   timeOfBirth       String
   placeOfBirth      String
-  service           String   // 'kundli' or 'question'
-  consultationType  String   // 'chat', 'phone', or 'video'
-  question          String?  // for question readings
+  service           String
+  consultationType  String
+  question          String?
   whatsappNumber    String?
-  status            String   @default("pending") // 'pending', 'confirmed', 'completed', 'cancelled'
+  status            String   @default("pending")
   amount            String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  screenshots       PaymentScreenshot[]
 }
 
+/* ========================
+  PAYMENT SCREENSHOT MODEL
+======================== */
+
+model PaymentScreenshot {
+  id         Int      @id @default(autoincrement())
+  bookingId  Int
+  imageUrl   String
+  uploadedAt DateTime @default(now())
+
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+}
+
+/* ========================
+    CONTACT FORM MODEL
+======================== */
+
 model ContactMessage {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
+  id           String   @id @default(cuid())
+  name         String
+  email        String
   mobileNumber String?
-  phone     String?
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  phone        String?
+  message      String
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
