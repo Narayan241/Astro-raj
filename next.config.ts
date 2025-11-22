@@ -1,6 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   output: "standalone",
+
   reactStrictMode: false,
 
   typescript: {
@@ -11,7 +13,10 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // ⚠️ REMOVE webpack watch options – Vercel doesn't support them
+  experimental: {
+    manualClientBasePath: true, // 👈 Vercel routes-manifest.json fix
+  },
+
   webpack: (config) => {
     return config;
   },
